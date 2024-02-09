@@ -1,0 +1,77 @@
+GNS3 
+    - GNS3 stands for Graphical Network Simulator-3. It's a popular network simulation software used by networking professionals, students, and instructors to design, configure, and test complex network topologies without the need for physical hardware.
+    - GNS3 allows users to emulate different types of network devices, such as routers, switches, and firewalls, using real IOS (Internetwork Operating System) images provided by Cisco or other vendors. Users can create virtual networks by dragging and dropping devices onto a simulated workspace, then connect them together using virtual cables.
+    - One of the key advantages of GNS3 is its flexibility and scalability. Users can create and test large-scale network scenarios, experiment with different configurations, and troubleshoot network issues in a safe virtual environment. GNS3 also supports integration with external applications and tools, such as Wireshark for packet analysis and VirtualBox for virtual machine integration.
+    
+Class Work:
+As this was an Intro class, sir didn't give us any lab work. But sir gave us an Intro to GNS3. After launching GNS3, we will make a new project and add as many nodes we need (if we need 2 PCs, we will add VPCs), then we add a switch and connect the PCs using a cable to some ports in the Switch.
+After that, we turn on the PCs and right click on it to open a console of the PC. After opening consoles of both the PCs, a terminal appears. So, now, we can run commands in this. We can set IP Addresses of the PCs.
+
+So, to do that, we will run the command - "ip <some IP Address>"
+
+This command will check if the IP Address is empty and assign this to the virtual PC. 
+
+After this, we will run the command - "save"
+
+to save this IP to the PC.
+
+
+To see what IP is set to it, we can always run the command "show ip".
+
+E.g., We can assign an IP to the PC1 in this manner, "ip 10.0.0.1/8", here 8 is the subnet mask.
+      We can assign an IP to the PC2 in this manner, "ip 10.0.0.2/8", here 8 is the subnet mask.
+Now, we mentioned 8 as the subnet, so both the PCs have the same Network Address in IP. So, the digit before the first decimal point is our Network Address ('10' in 8 bits would be '00001010').
+So, for systems to communicate via a switch, the network part of the IP Address should be equal as Switches work on Layer 2 and don't route a data packet. Routing a data packets are done by Routers only.
+
+So, now, we can ping one device from another using the command - "ping <IP Address>"
+
+IF THE NETWORK PART IS DIFFERENT, WE CANNOT COMMUNICATE BETWEEN DEVICES AS IT MEANS THAT THE DEVICES ARE IN DIFFERENT NETWORKS. AND PINGING SUCH IP WILL GIVE US AN ERROR.
+SWITCHES ONLY FORWARD PACKETS IN THE LOCAL NETWORK.
+
+To communicate between devices belonging to different networks, we will need a Router.
+
+To show this, sir changed the IP of one of the PCs and we couldn't ping them.
+
+Then we changed the switch to a router. 
+After that, we turned on the router and opened its console. 
+
+In that, we can see a console and we can make the changes to make a Gateway using to connect the two Network Addresses. In that console, we can run a command "?" to access the help section.
+
+Now, as we need to configure the router, we need to open the configure terminal in that, 
+to do that, we can simply run the command, "configure terminal" 
+This will start the configure mode.
+
+After that, we need to run the command, "interface FastEthernet0/0", to set the IP Address of the 1st Port which is connected to the PC1.
+
+After this, we will run the command, "ip address 10.0.0.254 255.0.0.0", to mention the IP Address that the PC1 accepts and the  subnet mask of it. (NOTE - GNS3 uses a pretty old Cisco Router which understands Subnets only when written like this 255.255.255.255 format, i.e., writing the subnet after the IP address using a '/' won't be understandable by the router).
+
+After that, we will run the command, "no shutdown", so that the port and connection of the PC1 does not go to sleep or shutdown if there is no data transfer.
+
+Similarly, we have to do the same thing for the second port of the router which is connected to PC2, using the command "interface FastEthernet0/1"
+
+After this, set the IP of PC2 using the command. "ip address 11.0.0.254 255.0.0.0" as the PC2 only accepts IP Addresses with '11' as the network address.
+
+Again, run the command "no shutdown" so that the port and the connection of PC2 does not go to sleep or shutdown if there is no data transfer.
+
+Now, enter "exit" to exit from the config mode of the Router's Terminal.
+
+Now, go to any PCs console and type the following command to make a Gateway in it,
+"ip <IP Address of the PC> <Last IP Address of that network>"
+
+e.g., for the 1st PC type the following command: "ip 10.0.0.1/8 10.0.0.254"
+      for the 2nd PC type this: "ip 11.0.0.1/8 11.0.0.254"
+      This is for setting a default gateway that the PC has an IP 10.0.0.1 (for PC1) and it has a gateway to the IP 10.0.0.254 in the router and it can communicate through that.
+
+This makes the communication between both the PCs possible even though they are technically in different networks. 
+
+Now, pinging these IP addresses won't give us any kind of error.
+
+Sir also taught us about ARP Tables.
+
+Writing the command:
+"arp"
+in any console belonging to the PCs shows us it's ARP table which has stored the MAC address of the node in that IP Address.
+
+Note - The entries in ARP tables are not permanent at all and they are stored for around 2 and a half minutes only because if it does not delete entries, the table might fill up soon and become too long to be used for traversal in a cache. So, the table keeps on clearing the stored contents after sometime. 
+
+Note - We can also make some static entries in an ARP table to avoid the broadcasting and delay in first data delivery. These static entries are used between devices which communicate regularly. Static ARP Entries also help us in preventing Security Issues like Man in the Middle and all.
