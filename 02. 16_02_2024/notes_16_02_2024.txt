@@ -1,0 +1,64 @@
+HUBS Vs. SWITCHES
+Hubs and switches are both devices used in computer networks to connect multiple devices together, such as computers, printers, and servers. However, they operate in different ways and have different functionalities:
+
+	Hub:
+	-> A hub is a basic networking device that operates at the physical layer (Layer 1) of the OSI model.
+	-> It works by broadcasting data to all devices connected to it, regardless of whether the data is intended for a specific device.
+	-> Hubs are essentially multi-port repeaters. When they receive data on one port, they broadcast that data out on all other ports.
+	-> They are simple and inexpensive but less efficient compared to switches, as they can cause network congestion and collisions, especially in larger networks.
+	
+	Switch:
+	-> A switch is a more advanced networking device that operates at the data link layer (Layer 2) of the OSI model.
+	-> Unlike hubs, switches maintain a MAC address table, which maps MAC addresses to the physical ports on the switch.
+	-> When a switch receives data, it checks the destination MAC address and forwards the data only to the port associated with that MAC address, rather than broadcasting it to all ports. This makes switches more efficient and reduces network congestion.
+	-> Switches can also support full-duplex communication, allowing data to be transmitted and received simultaneously on each port.
+	-> They are more expensive than hubs but offer better performance and security, particularly in larger networks.
+
+
+WIRESHARK
+Wireshark is a widely-used network protocol analyzer. It is an open-source software application that allows you to capture and analyze the data traveling back and forth on a network in real-time. Here are some key features and uses of Wireshark:
+
+	1. Packet Capture: Wireshark captures packets (data units) as they travel through the network. It supports capturing packets from a wide range of network interfaces, including Ethernet, Wi-Fi, Bluetooth, and more.
+
+	2. Protocol Analysis: Wireshark supports a vast array of network protocols, ranging from common ones like TCP, UDP, HTTP, and DNS to more specialized or proprietary protocols. It can dissect and decode these protocols, allowing you to see the details of each packet, such as headers, payloads, and flags.
+
+	3. Live Capture and Offline Analysis: Wireshark can capture packets in real-time from a live network interface, or it can analyze packet capture files that have been saved previously. This makes it useful for troubleshooting network issues as they occur or for analyzing historical network traffic.
+
+	4. Filtering and Search: Wireshark provides powerful filtering capabilities, allowing you to focus on specific types of traffic or packets of interest. You can create complex filters based on criteria such as protocol, source or destination IP address, port number, packet size, and more.
+
+	5. Statistics and Graphing: Wireshark offers various statistical tools and graphing capabilities to help you analyze network traffic patterns, identify trends, and pinpoint anomalies. You can view statistics such as packet counts, protocol distribution, packet size distribution, and round-trip times.
+
+	6. Protocol Decryption: Wireshark can decrypt encrypted traffic if you have access to the necessary encryption keys. This feature is particularly useful for analyzing secure protocols like SSL/TLS or SSH.
+
+	7. Cross-Platform: Wireshark is available for multiple operating systems, including Windows, macOS, and various Linux distributions, making it widely accessible to users across different platforms.
+
+
+CLASS WORK
+1. Place a Hub and 3 VPCs and then connect them using ethernet.
+2. Then, open the console of the three PCs and assign them IP address using the command: "ip <IP address>"
+	i. Assign the IP address "10.0.0.1/24" to PC1 using the commands:
+		ip 10.0.0.1/24
+		save
+	ii. Assign the IP address "10.0.0.2/24" to PC2 using the commands:
+		ip 10.0.0.2/24
+		save
+	iii. Assign the IP address "10.0.0.3/24" to PC3 using the commands:
+		ip 10.0.0.3/24
+		save
+3. Then, click on the wire between the Hub and PC1 and right click and then choose the option "Start Capture" and Wireshark will launch. 
+4. After that, open the terminal of PC1 and ping PC2 using the command: "ping 10.0.0.2/24".
+5. After pinging, we can see in the wireshark, some entries related to the switching of packets, i.e., it will show us entries like how a broadcast was made from PC1 and after that there was a private message from PC2 to PC1 which was in the ARP Protocol,i.e., it sent it's MAC Address to PC1. 
+6. Then close the terminal of PC3 and delete it. 
+7. After that, add a "Cloud" from the Devices menu into the area and connect that tp the Hub. 
+(This Cloud is not like AWS, Azure or GCP. This connects the simulator to the actual physical network of the VM. We can see the route of actual data packets and all using wireshark here.)
+8. Now, you can open the terminal in the VM and type the command: "ifconfig", and we can see the Cloud's port on it.
+9. Now, open wireshark from "Applications">"Internet">"Wireshark".
+10. After that, open the Port of the Cloud in Wireshark and observe it as it's our PC connected to the network and interacting with it. You can see the route of the Data Packets in it. 
+11. After this, you can ping the PC2 from PC1 and still see the Packets being sent in the Wireshark (which is now sniffing the packets of the cloud) because the Hub broadcasts the data packets to every other node and the Cloud is in fact one of the device which is receiving the broadcast.
+
+
+LAB WORK
+1. Repeat the above exp by replacing the hub with a built in Switch amd observe the packets captured by Wireshark.
+	-> Steps: The steps are same as above in the Class work.
+	-> Result: (Only one entry of ARP broadcasting is available in the Wireshark of the cloud node, no other packets are displayed like before because the Switch does not broadcast every other data packet to all the nodes it is connected to, unlike Hub. You can compare the results by opening another Wireshark between PC1 and the Switch, it will show all the packets but the wireshark of the cloud won't display all the others because a switch creates a personal and singular connection between the devices and nothing is broadcasted except the first ARP Broadcast.)
+
