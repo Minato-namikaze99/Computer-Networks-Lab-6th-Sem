@@ -1,0 +1,126 @@
+Notes of 23rd of February, 2024
+
+DHCP
+    - DHCP stands for Dynamic Host Configuration Protocol. 
+    - It's a network management protocol used on IP networks where a DHCP server dynamically assigns IP addresses and other network configuration parameters to devices on the network. 
+    - This eliminates the need for a network administrator to manually assign IP addresses to every device, making it more efficient and scalable, especially in large networks. 
+    - DHCP operates on the client-server model, where the DHCP server manages a pool of IP addresses and leases them to clients for a specific period of time.
+
+Why is DHCP used?
+    - DHCP is used for several reasons:
+        - Dynamic IP Address Allocation: DHCP allows for the automatic assignment of IP addresses to devices on a network. This dynamic allocation means that devices can join or leave the network without requiring manual intervention from network administrators to assign or reassign IP addresses.
+        - Efficiency: DHCP simplifies the process of managing IP addresses in large networks. Instead of having to manually configure IP addresses for each device, DHCP automates this process, saving time and reducing the potential for human error.
+        - Centralized Management: With DHCP, network administrators can centrally manage and configure IP address settings from a single DHCP server. This centralized management makes it easier to maintain and update network configurations.
+        - Address Conservation: DHCP leases IP addresses to devices for a specific period of time. Once a device no longer needs an IP address (e.g., it leaves the network or shuts down), the IP address can be reclaimed by the DHCP server and assigned to another device. This helps conserve IP address space by preventing the permanent allocation of addresses to devices that are not actively using them.
+        - IP Address Reuse: DHCP allows for the reuse of IP addresses as devices join and leave the network. This flexibility ensures that IP addresses are used efficiently and reduces the likelihood of running out of available addresses.
+
+Evolution of DHCP
+    - The evolution of DHCP has been driven by the increasing complexity and scale of networks, as well as the need for more efficient and flexible IP address management. Here's a brief overview of the evolution of DHCP:
+        - DHCPv1: The original version of DHCP, defined in RFC 1531 in 1993. It provided basic automatic IP address assignment and configuration parameters for devices on a network.
+        - DHCPv2: This version introduced enhancements and improvements over DHCPv1 but was never widely deployed or standardized.
+        - DHCPv3: DHCPv3 was developed as part of the Dynamic Host Configuration working group within the IETF (Internet Engineering Task Force). It aimed to address limitations and issues with previous versions, such as better support for IPv6 and improved security features. However, DHCPv3 was never officially standardized or widely adopted.
+        - DHCPv4: DHCPv4, also known as DHCP for IPv4, is the most widely deployed version of DHCP. It is defined in RFC 2131 and RFC 2132 (with updates and extensions in subsequent RFCs) and provides automatic IP address assignment, configuration parameters (such as subnet mask, default gateway, DNS servers), and lease management for IPv4 networks.
+        - DHCPv6: With the adoption of IPv6, DHCPv6 was developed to provide similar functionality for IPv6 networks. It is defined in RFC 3315 and provides automatic IPv6 address assignment, configuration parameters, and other network settings for devices on an IPv6 network.
+        - DHCPv6 Prefix Delegation: This extension to DHCPv6 enables the delegation of IPv6 address prefixes to routers, allowing them to dynamically assign prefixes to downstream networks or devices.
+        - DHCPv6 Failover: DHCPv6 failover mechanisms, defined in RFC 7031, provide redundancy and high availability for DHCPv6 servers, ensuring continuous service even if one server fails.
+
+Evolution of DHCP (from RARP to BOOTP to DHCP)
+    - The evolution of DHCP can be traced through its predecessors: RARP (Reverse Address Resolution Protocol) and BOOTP (Bootstrap Protocol), which laid the groundwork for DHCP's development:
+        - RARP (Reverse Address Resolution Protocol):
+            - RARP was designed to allow a computer to obtain its IP address dynamically by broadcasting its MAC address and requesting an IP address assignment from a RARP server.
+            - However, RARP had limitations. It only provided IP address assignment and required configuration of each device's MAC address in the RARP server's table, which was cumbersome and not scalable.
+        
+        - BOOTP (Bootstrap Protocol):
+            - BOOTP was developed to address some of the limitations of RARP. It extended the functionality of RARP by providing additional parameters such as the IP address of the client's gateway and the IP address of the server hosting the operating system image (bootstrap file).
+            - Unlike RARP, BOOTP used a client-server architecture where the client (typically a diskless workstation) broadcasted a request, and a BOOTP server responded with the necessary configuration information.
+            - While an improvement over RARP, BOOTP still required manual configuration of client information on the server, which was not ideal for large networks or environments with frequently changing devices.
+        
+        - DHCP (Dynamic Host Configuration Protocol):
+            - DHCP further refined the dynamic address assignment process introduced by RARP and BOOTP.
+            - Unlike BOOTP, DHCP introduced the concept of address leasing, allowing the DHCP server to dynamically assign IP addresses to clients from a pool of available addresses for a limited time period.
+            - DHCP also automated the configuration process by allowing for the dynamic allocation of other network configuration parameters, such as subnet mask, default gateway, DNS server, and more.
+            - Additionally, DHCP introduced the concept of DHCP relay agents, enabling DHCP messages to be forwarded across different network segments, thus facilitating the deployment of DHCP in large, segmented networks.
+
+(What is a thin client?
+    - A thin client is a lightweight computer or software application that relies heavily on a central server or cloud infrastructure for its computational resources and applications. Unlike traditional desktop computers or thick clients, which have significant processing power, storage, and software installed locally, thin clients are designed to be simpler and more streamlined.
+        Here are some key characteristics of thin clients:
+        - Minimal Local Processing: Thin clients typically have limited processing power, memory, and storage capacity. They are designed to offload most of their processing tasks to a central server or cloud infrastructure.
+        - Remote Access: Thin clients primarily rely on remote access protocols such as Remote Desktop Protocol (RDP), Virtual Network Computing (VNC), or web-based interfaces to access applications and data stored on servers or in the cloud.
+        - Centralized Management: Thin clients are centrally managed by administrators who can remotely configure, update, and monitor them from a centralized management console. This simplifies maintenance and reduces the administrative overhead compared to managing individual desktop computers.
+        - Cost-Effective: Thin clients are often more cost-effective than traditional desktop computers because they have lower hardware requirements and longer lifespans. Additionally, since most of the processing occurs on central servers, thin clients can extend the lifespan of older hardware.
+        - Security: Because thin clients rely on centralized servers for data storage and processing, they can offer enhanced security compared to traditional desktop computers. Centralized management allows for easier implementation of security policies, updates, and access controls.
+)
+
+DHCP Pool
+    - A DHCP pool refers to a range of IP addresses that a DHCP server is configured to dynamically assign to client devices on a network. When a client device requests an IP address via DHCP, the DHCP server selects an available IP address from the pool and leases it to the client for a specified period of time.
+        The DHCP pool configuration typically includes the following parameters:
+        - IP Address Range: Specifies the range of IP addresses that are available for assignment to client devices. For example, a pool might include addresses from 192.168.1.100 to 192.168.1.200.
+        - Subnet Mask: Defines the subnet mask associated with the IP addresses in the pool, indicating the network portion of the IP address.
+        - Gateway: Specifies the default gateway or router IP address that client devices should use to access other networks.
+        - DNS Servers: Provides the IP addresses of DNS servers that client devices should use for domain name resolution.
+        - Lease Time: Specifies the duration for which IP addresses are leased to client devices from the pool.
+        - Additional Options: May include additional configuration parameters such as domain name, NTP (Network Time Protocol) servers, and more.
+
+DHCP Lease time
+    - DHCP lease time refers to the duration for which an IP address is assigned to a client device by a DHCP server. 
+    - When a client device connects to a network and requests an IP address via DHCP, the DHCP server assigns an IP address from its pool of available addresses and specifies a lease time for that address.
+    - During the lease period, the client device is allowed to use the assigned IP address and network configuration parameters (such as subnet mask, default gateway, DNS servers) provided by the DHCP server. Once the lease time expires, the client device must renew its lease by requesting the same IP address from the DHCP server. If the lease is not renewed, the IP address may be reclaimed by the DHCP server and assigned to another client device.
+    - The lease time is configurable by network administrators and can vary depending on network requirements and policies. Shorter lease times may be used in dynamic environments where devices frequently join and leave the network, ensuring efficient use of IP address space and facilitating IP address reclamation. Longer lease times may be preferred in more stable environments to reduce DHCP traffic and overhead.
+
+What is DORA?
+    - DORA is an acronym that represents the four-step process involved in DHCP (Dynamic Host Configuration Protocol) for dynamically assigning IP addresses to client devices on a network. 
+        Each letter in "DORA" stands for one of the steps in this process:
+        - Discover: In the first step, the client device broadcasts a DHCP Discover message to discover DHCP servers available on the network. This message is sent out by a client when it initially connects to the network or when it needs to renew its IP address lease.
+        - Offer: Upon receiving the DHCP Discover message, DHCP servers on the network respond with a DHCP Offer message. This message contains an available IP address that the server is willing to lease to the client, along with other network configuration parameters such as subnet mask, default gateway, DNS servers, and lease duration.
+        - Request: After receiving one or more DHCP Offer messages, the client selects one of the offered IP addresses and sends a DHCP Request message to the chosen DHCP server. This message formally requests the offered IP address and confirms the selection.
+        - Acknowledge: Finally, the DHCP server responds to the client's DHCP Request message with a DHCP Acknowledgment (Ack) message. This message confirms that the client's request has been accepted, and it includes the leased IP address and other configuration parameters. The client can now use the assigned IP address and network settings for the duration of the lease.
+
+LAB WORK 
+    - Demonstrate the exchange of DORA Messages for allocation of IP Address to the client using VPS Facility and using WIreshark.
+    - Configuring a Router to act as a DHCP Server.
+
+    - SETUP 
+        - Place a router and a VPC in the workspace and connect them using an Ethernet.
+        - Now start the Router and Open it's console. 
+        - After that, run the following commands:
+            $ configure terminal (this opens the terminal in configure options, allowing us to modify stuff)
+            $ interface FastEthernet 0/0 (as this selects the 0 port and uses that)
+            $ ip address 10.0.0.1 255.255.255.0 (This sets the given IP address to that Port)
+            $ no shutdown (This allows the port to not sleep and keep it active all the time)
+            $ exit (exits the Interface of the 0 port)
+            $ ip dhcp? (shows the help settings of DHCP)
+            $ ip dhcp excluded-address 10.0.0.1 10.0.0.10 (This excludes the provided range of IP Addresses to be assigned to any of its clients)
+              [ip dhcp excl 10.0.0.1 10.0.0.10, is the short of the above command]
+            $ ip dhcp pool testdhcp (it opens an option to create a DHCP Pool of the name 'testdhcp' [The name can be changed of course])
+            $ default-router 10.0.0.1 (sets the default router)
+            $ network 10.0.0.0 255.255.255.0 (sets the network)
+            $ dns-server 10.0.0.2 (sets the dns server)
+            $ lease 1 10 15 (it sets the lease time as 1D 10H and 15M)
+            $ domain-name home.net (sets the domain name as "home.net")
+            $ end (ends the dhcp menu)
+            $ write (writes the DHCP settings that we provided)
+            $ show ip dhcp pool (shows us the dhcp pools that we have set)
+
+        - Now start the VPC and open it's console and write the following commands:
+            $ ip dhcp -d (It sends a message to DHCP and asks for an IP Address and the DHCP Server sets an IP Address of 10.0.0.11 to the VPC1)
+            $ show ip (Now it will show the IP Address and all assigned to it by the DHCP)
+
+        - Now, turn off the PC and open a wireshark between the Router VHCP Connection and run the command"
+            $ ip dhcp -d 
+            (Now this will display the DORA Transactions that take place when an IP is assigned from the DHCP within the wireshark)
+
+        -  After the DHCP assigns an IP, there is an ARP Broadcast of the IP Address of the VPC. This shares the IP and also checks for any collision in IP Addresses.
+
+    - QUESTION
+        - Configure a Router to act as a DHCP Server, with the following configuration:
+            DHCP Pool Name: (any name)
+            Server IP Address: 192.168.0.1/24
+            Excluded Ip Address Range: 192.168.0.1 to 192.168.0.10
+            Default Router: 192.168.0.1
+            DNS Server: 192.168.0.2
+            Domain Name: jecassam.ac.in 
+            Lease Time: 2h 30M
+
+        - Display the DORA Message with the help of VPCS Facility, as well as using Wireshark.
+        ANSWER -
+        Same as before, just change the values.
