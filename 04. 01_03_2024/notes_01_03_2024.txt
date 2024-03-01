@@ -1,0 +1,96 @@
+Notes of 1st of March, 2024.
+
+VLAN
+    - A Virtual Local Area Network (VLAN) is a method of logically segmenting a physical network into multiple distinct broadcast domains. This segmentation allows you to isolate traffic and improve network performance, security, and manageability. VLANs are typically configured in switches by grouping together ports and assigning them to specific VLAN IDs. 
+    - Devices within the same VLAN can communicate with each other as if they were connected to the same physical network, even if they are physically located in different parts of the network. VLANs are widely used in enterprise networks to control traffic flow and enforce security policies.
+
+Why is VLAN important?
+    - VLANs are important for several reasons:
+        -> Network Segmentation: VLANs allow you to logically segment a network, separating different types of traffic (such as voice, data, or video) or different user groups (like departments or teams) into separate broadcast domains. This segmentation helps improve network performance and security by reducing broadcast traffic and isolating network issues.
+        -> Security: VLANs provide a level of security by isolating traffic within specific VLANs. By controlling access between VLANs through routers or firewalls, you can restrict communication between different parts of the network, helping to prevent unauthorized access or attacks.
+        -> Simplified Management: VLANs make network management easier by allowing administrators to group devices logically rather than physically. This flexibility enables easier administration of network policies, such as access control lists (ACLs) and Quality of Service (QoS) settings, across multiple devices.
+        -> Cost Savings: VLANs can help reduce costs by enabling the consolidation of network devices. Instead of having separate physical switches for each department or function, VLANs allow you to use a single physical switch while maintaining separate logical networks.
+        -> Flexibility and Scalability: VLANs provide flexibility and scalability in network design. You can easily add, remove, or modify VLANs as needed without physically rewiring the network. This makes it easier to adapt to changes in organizational structure or network requirements.
+
+Why is Segregating the networks important?
+    - Segregating networks is important for several reasons:
+        -> Security: Segregation helps contain security breaches. If one segment of the network is compromised, it's harder for an attacker to move laterally to other parts of the network if they are segregated. This containment limits the potential impact of security incidents and reduces the likelihood of unauthorized access to sensitive data or systems.
+        -> Compliance: Many industries have regulatory requirements that mandate network segregation to protect sensitive information. Segregating networks helps organizations comply with regulations such as the Health Insurance Portability and Accountability Act (HIPAA) or the Payment Card Industry Data Security Standard (PCI DSS).
+        -> Performance: By segregating different types of traffic into separate networks, you can optimize network performance. For example, separating voice traffic from data traffic can ensure that real-time applications like VoIP receive sufficient bandwidth and low latency, enhancing overall network performance.
+        -> Resource Management: Segregation allows for more efficient resource allocation and management. By isolating specific types of traffic or user groups into separate networks, you can apply different policies, quality of service (QoS) settings, and bandwidth allocation strategies tailored to the needs of each segment.
+        -> Troubleshooting and Maintenance: Segregated networks make troubleshooting and maintenance easier. When issues arise, administrators can focus their efforts on the affected segment without disrupting the entire network. Similarly, performing maintenance tasks, such as software updates or configuration changes, can be done more safely and efficiently when network segments are isolated.
+
+LAB WORK:
+    - Open a new project.
+    - Then add 2 Ethernet Switches and 6 VPCs.
+    - Now, we need to connect Switch 1 to 4 PCs, and it should have 10 VLANs assigned to PC1 and PC2, and 20 VLANs to PC3 and PC4.
+    - And, we need to connect the Switch 2 to the other 2 PCs and it should have 10 VLANs assigned to PC5 and 20 VLANs assigned to PC6.
+    - And then, we have to create a trunk connection between the two switches.
+    - So, to do this, right click on the switch and open the "Configure" option.
+    - After this, for the Switch 1, delete all the preset port settings, and select port 0 and set the VLANs to 10 and the type to "access" and then press "add". Do the same for Port 1. This will give 10 VLANs to the port 0 and 1 which will be connected to PC1 and PC2.
+    - Now, set do the same and just set VLAN = 20 for ports 2 and 3, which will be connected to PC3 and PC4.
+    - Now, create a port 4 and set the VLAN to 1 and the type to "dot1q". This is the trunk part of the connection.
+    - Now, do the same for Switch 2, i.e., set the VLANs of Port 0 to 10, and set the VLANs of Port 1 to 20 and set the Port 2 as trunk and set the VLAN as 1.
+    - Now, assign the following IPs to the PCs, using the command: 
+            "ip <ip address>" 
+            and then 
+            "save"
+        IP           PC
+        10.0.0.1/24   1
+        10.0.0.2/24   2
+        10.0.0.3/24   3
+        10.0.0.4/24   4
+        10.0.0.5/24   5
+        10.0.0.6/24   6
+
+    - Now, you can ping between PCs with the same VLAN numbers as it apparently sets the VLAN and not the "number of VLAN". Pinging PCs with different VLAN will give us an error as the host is not reachable.
+
+
+    - Now open a new project.
+    - Add 2 L2 Switches (Cisco Switches) and 6 VPCs and connect it the way we did it before.
+    - Now, running the switch will give us an error as the Software a key to work.
+    - To get the key, open a normal terminal, and run the command:
+        "python2 keygen.py"
+        This will generate a key. Copy that key and paste it into the file named ".iourc"
+    - Now, restart the GNS3 app and reopen the project.
+    - Now start the Switch 1 and open its console.
+    - Now run the commands:
+        "show vlan brief" (this shows the brief of the VLANs set up)
+        "Configure terminal" (opens the terminal in config mode)
+        "vlan 10" (sets the VLAN 10)
+        "name red" (sets it to a name "red")
+        "no shutdown" (sets the port and VLAN to not shutdown when inactive)
+        "exit" (exits the vlan mode)
+
+        "vlan 20"
+        "name green"
+        "no shutdown"
+        "exit"
+
+        "interface range ethernet 0/0 - 1"
+        "switchport access vlan 10" (sets the vlan to 10 and mode to access for the ports in the range 0/0-0/1)
+        "no shutdown"
+        "interface range ethernet 0/2 - 3"
+        "switchport access vlan 20"
+        "no shutdown"
+
+        "interface ethernet 3/3"
+        "switchport trunk encapsulation dot1q" (apparently you cant set the mode to trunk in Cisco Switches. So, we need to use an encapsulation method to set it as dot1q)
+        "switchport mode trunk" (sets the mode to trunk now)
+        "switchport trunk allowed vlan 10,20"
+        "no shutdown"
+        "end"
+
+        This has set the configuration given above for the 1st switch.
+
+        Now, set the config for the 2nd one yourself (THE LAB WORK FOR TODAY).
+        (ANSWER FOR THE LAB WORK IS THE SAME AS ABOVE)
+
+
+
+
+
+
+
+
+    
