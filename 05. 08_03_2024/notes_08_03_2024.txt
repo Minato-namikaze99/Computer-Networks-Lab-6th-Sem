@@ -1,0 +1,119 @@
+08th of March, 2024
+
+Spanning Tree Protocol (STP)
+    - The Spanning Tree Protocol (STP) is a network protocol that ensures a loop-free topology in Ethernet networks. When multiple paths exist between switches, there's a risk of loops, which can lead to broadcast storms and network congestion. STP prevents these loops by identifying redundant links and blocking some of them, thus creating a loop-free tree structure.
+        Here's a simplified overview of how STP works:
+        -> Bridge ID (BID) Selection: Each switch in the network is assigned a unique Bridge ID, consisting of a priority value and the switch's MAC address. The switch with the lowest BID becomes the root bridge, which is the reference point for the spanning tree.
+        -> Root Bridge Election: Initially, all switches consider themselves as the root bridge. They exchange Bridge Protocol Data Units (BPDU) to determine which switch has the lowest BID. The switch with the lowest BID becomes the root bridge.
+        -> Designated Ports Selection: Once the root bridge is elected, each non-root switch determines the shortest path to reach the root bridge. The ports through which these paths are established are designated as forwarding ports, while all other ports on the switches are placed in a blocking state.
+        -> Blocking Ports: If there are redundant links between switches, STP identifies these links and blocks them to prevent loops. These blocked ports remain in a listening and learning state, ready to be activated if a failure occurs on the active path.
+        -> Topology Changes: STP continually monitors the network for changes in the topology. If a link fails or a new link is added, STP recalculates the spanning tree and adjusts port states accordingly.
+        -> Spanning Tree Variants: There are multiple variants of STP, including Rapid Spanning Tree Protocol (RSTP) and Multiple Spanning Tree Protocol (MSTP), which improve upon the original STP by reducing convergence times and providing support for multiple VLANs, respectively.
+
+Why STP?
+    - Spanning Tree Protocol (STP) is essential for several reasons:
+        -> Loop Prevention: One of the primary reasons for using STP is to prevent loops in Ethernet networks. Without STP, loops can lead to broadcast storms, where broadcast packets continuously circulate the network, consuming bandwidth and causing network congestion. STP identifies and disables redundant links to ensure a loop-free topology.
+        -> Redundancy: While loops are undesirable, having redundant links between switches can be beneficial for fault tolerance and improved network performance. STP allows the network to utilize these redundant links effectively while preventing loops. If one link fails, STP reconverges the network to activate an alternate path, minimizing downtime.
+        -> Stability: STP contributes to the stability of Ethernet networks by ensuring a consistent and predictable topology. By establishing a single, optimal path between switches, STP helps in maintaining network stability and preventing unexpected network behaviors.
+        -> Scalability: Ethernet networks often grow in size and complexity over time. STP provides a scalable solution for managing network topology changes by automatically recalculating the spanning tree in response to changes such as link failures or additions. This scalability allows Ethernet networks to adapt to evolving requirements without manual intervention.
+        -> Standardization: STP is a widely adopted standard protocol defined by the IEEE 802.1D specification. Its widespread adoption ensures interoperability between networking equipment from different vendors, allowing for the creation of heterogeneous networks that consist of switches from various manufacturers.
+        -> Variants and Enhancements: Over time, STP has evolved into variants such as Rapid Spanning Tree Protocol (RSTP) and Multiple Spanning Tree Protocol (MSTP), which offer improvements in convergence times, support for multiple VLANs, and better utilization of redundant links. These enhancements make STP even more effective in modern network environments.
+
+What are the problems with loops in an Ethernet Network?
+    - Loops in an Ethernet network can lead to several significant problems:
+        -> Broadcast Storms: Broadcast packets are messages sent to all devices on a network segment. In a looped network, these broadcast packets can circulate endlessly, creating what is known as a broadcast storm. As the packets continuously traverse the loop, they consume network bandwidth and overwhelm network devices, leading to degraded network performance and potentially causing network downtime.
+        -> Packet Duplication: In a looped network, packets may be duplicated as they traverse the loop multiple times. This duplication can result in inefficiencies, increased network latency, and potential data corruption if different versions of the same packet arrive at the destination out of order.
+        -> MAC Address Table Instability: Switches in Ethernet networks maintain MAC address tables to facilitate the forwarding of packets to their intended destinations. In a looped network, MAC address table entries may become unstable as switches receive packets with the same MAC address arriving on different ports due to the loop. This instability can lead to incorrect packet forwarding and network connectivity issues.
+        -> Unpredictable Behavior: Loops can cause unpredictable behavior in Ethernet networks, making it challenging for network administrators to troubleshoot and diagnose network problems. Devices may experience intermittent connectivity issues, and network traffic patterns may vary unpredictably, making it difficult to identify the root cause of performance problems.
+        -> Resource Exhaustion: In extreme cases, loops can lead to resource exhaustion on network devices such as switches and routers. As devices become overwhelmed by the continuous circulation of packets, their processing capabilities may be strained, leading to device crashes or failures and disrupting network services.
+
+STP Standards
+    - Spanning Tree Protocol (STP) has several standards and variants developed over time to address different aspects of network topology management and improve its efficiency. Here are some of the key STP standards:
+        -> IEEE 802.1D: The original STP standard, defined by the Institute of Electrical and Electronics Engineers (IEEE), specifies the basic operation of STP. It defines how switches exchange Bridge Protocol Data Units (BPDUs) to establish a loop-free topology and elect a root bridge.
+        -> IEEE 802.1w (Rapid Spanning Tree Protocol - RSTP): RSTP is an enhancement of the original STP designed to reduce convergence times in larger networks. It achieves faster convergence by introducing new port roles (e.g., discarding, learning, and forwarding) and by using faster BPDU propagation mechanisms.
+        -> IEEE 802.1s (Multiple Spanning Tree Protocol - MSTP): MSTP extends the capabilities of STP to support multiple VLANs (Virtual Local Area Networks) within a single spanning tree instance. It allows network administrators to group VLANs into common spanning tree instances, reducing the overhead associated with maintaining separate spanning trees for each VLAN.
+        -> IEEE 802.1Q (VLAN Tagging): While not directly part of STP, IEEE 802.1Q is a standard for VLAN tagging, which is often used in conjunction with STP. VLAN tagging allows switches to identify and differentiate traffic belonging to different VLANs, enabling the creation of separate broadcast domains and improving network efficiency.
+        -> IEEE 802.1D-2004 (Rapid Reconfiguration of Spanning Tree Protocol - RSTP): This amendment to the original 802.1D standard introduced enhancements to STP, bringing it closer to the capabilities of RSTP. It includes features such as Proposal/Agreement mechanism and Port Roles that help reduce convergence times.
+        -> IEEE 802.1Q-2014 (Multiple Spanning Trees - MST): This amendment to the 802.1Q standard further extends the capabilities of MSTP, providing improvements in scalability and interoperability. It introduces the concept of Multiple Instances Spanning Tree Protocol (MISTP), allowing for finer control over the configuration of spanning tree instances.
+
+Components of STP
+    - The Spanning Tree Protocol (STP) involves several components that work together to establish and maintain a loop-free topology in Ethernet networks:
+        -> Bridge: A bridge, also known as a switch, is a networking device that operates at the data link layer (Layer 2) of the OSI model. Bridges participate in STP by exchanging Bridge Protocol Data Units (BPDUs) with other bridges to determine the network topology and elect the root bridge.
+        -> Bridge ID (BID): Each bridge in the network is assigned a unique Bridge ID, which consists of a priority value and the bridge's MAC address. The priority value is a configurable parameter that determines a bridge's eligibility to become the root bridge.
+        -> Root Bridge: The root bridge is the central point of reference for the spanning tree topology. It is the bridge with the lowest Bridge ID in the network. All other bridges use the root bridge as the starting point for calculating the shortest paths to reach all other bridges in the network.
+        -> Ports: Ports on a bridge connect it to other devices in the network, such as switches or end devices. Each port is assigned a role in the spanning tree topology, which determines how it participates in the forwarding of data packets. The possible port roles include root port, designated port, and blocked port.
+        -> Bridge Protocol Data Units (BPDUs): BPDUs are messages exchanged between bridges to convey information about the spanning tree topology. BPDUs contain information such as the sender's Bridge ID, the root bridge's ID, and the cost of the path to reach the root bridge. BPDUs are used by bridges to elect the root bridge, determine port roles, and detect changes in the network topology.
+        -> Root Port: On each non-root bridge, the root port is the port that provides the shortest path to reach the root bridge. The root port is responsible for forwarding data packets towards the root bridge.
+        -> Designated Port: On each network segment, one port is designated as the designated port. The designated port is responsible for forwarding data packets away from the segment, towards the root bridge. All other ports on the segment are blocked to prevent loops.
+        -> Blocked Port: Ports that are not designated as root ports or designated ports are placed in a blocked state. Blocked ports do not forward data packets but continue to participate in the STP topology by receiving and transmitting BPDUs.
+
+BPDU Messages 
+    - Bridge Protocol Data Units (BPDUs) are messages exchanged between switches participating in the Spanning Tree Protocol (STP). These messages contain critical information about the spanning tree topology and help switches elect the root bridge, calculate paths to the root bridge, and determine the roles of ports in the network. Here's an overview of the information contained in BPDU messages:
+        -> Bridge ID: This identifies the sending bridge (switch). It consists of a priority value and the MAC address of the sending switch. The priority value is used to determine the root bridge, with lower values being preferred.
+        -> Root Bridge ID: This indicates the identity of the root bridge in the network. Initially, each switch advertises itself as the root bridge, but as BPDUs propagate through the network, switches converge on a common root bridge.
+        -> Path Cost: This is the cumulative cost of the path from the sending switch to the root bridge. It's calculated based on the cumulative costs of all links along the path. Each link has an associated cost, typically based on the link speed, with faster links having lower costs.
+        -> Port ID: This identifies the port through which the BPDU was sent. It's used to determine the role of the port on the receiving switch in the spanning tree topology.
+        -> Message Age: This indicates the time elapsed since the BPDU was originated by the root bridge. It helps switches determine the freshness of received BPDUs and detect changes in the network topology.
+        -> Max Age: This is the maximum age allowed for a BPDU before it's considered stale and discarded. If a switch doesn't receive BPDUs from the root bridge within the max age interval, it assumes that the root bridge is no longer reachable and starts the process of electing a new root bridge.
+        -> Hello Time: This is the interval between the transmission of BPDUs by the root bridge. BPDUs are sent out periodically to maintain the stability of the spanning tree topology.
+        -> Forward Delay: This is the time a port spends in the listening and learning states before transitioning to the forwarding state. It helps prevent transient loops during topology changes.
+        -> Flags and Flags Field: This field contains flags that indicate various properties of the BPDU, such as whether the sending switch is the root bridge or whether the port is designated or non-designated.
+        -> BPDU Message Timings:
+            i. BPDU Hello Messages: sent every 2 seconds
+            ii. Max Age (dead): 20 seconds
+            iii. Listening Time: 15 seconds
+            iv. Learning Time: 15 seconds 
+
+STP Operation (Using BPDU Messages)
+    - The operation of the Spanning Tree Protocol (STP) relies heavily on the exchange of Bridge Protocol Data Units (BPDUs) between switches. Here's an overview of how STP operates using BPDU messages:
+        -> Initialization: When switches are powered on or when network topology changes occur, STP goes through an initialization process. During this phase, each switch sends out BPDUs to announce its presence and gather information about neighboring switches.
+        -> Bridge ID Election: Each switch has a unique Bridge ID, composed of a priority value and the switch's MAC address. Initially, all switches consider themselves as potential root bridges and advertise their Bridge IDs in BPDUs. Switches compare received BPDUs to determine which switch has the lowest Bridge ID, and thus, should become the root bridge.
+        -> Root Bridge Election: The switch with the lowest Bridge ID becomes the root bridge. Once elected, the root bridge periodically sends out BPDUs with itself as the root bridge. All other switches forward these BPDUs to ensure consistent information throughout the network.
+        -> Path Cost Calculation: Switches calculate the cost of the path to reach the root bridge based on the cumulative cost of each link along the path. The path cost is included in BPDUs and helps switches determine the shortest path to reach the root bridge.
+        -> Port Roles Determination: Each switch determines the role of its ports in the spanning tree topology based on the information received in BPDUs. This includes identifying the root port (the port with the lowest path cost to the root bridge) and designated ports (ports on each segment with the lowest path cost to the root bridge).
+        -> BPDU Propagation: Switches continuously exchange BPDUs with neighboring switches to update information about the spanning tree topology. BPDUs contain information about the sender's Bridge ID, the root bridge's ID, the sender's port cost, and other relevant details.
+        -> Loop Detection and Blocking: If a switch detects a loop in the network, it takes action to block one or more ports to prevent the loop. This is achieved by placing redundant ports in a blocking state, effectively shutting down certain links to maintain a loop-free topology.
+        -> Topology Changes Detection: STP constantly monitors the network for changes in topology, such as link failures or additions. When a change is detected, switches update their spanning tree information accordingly and may adjust port roles or block/unblock ports as needed to maintain a loop-free topology.
+
+STP Port States
+    - Spanning Tree Protocol (STP) defines several port states that switches can transition through as they participate in the spanning tree algorithm. These states determine the role of a port in the network topology and its ability to forward or block traffic. The main port states in STP are:
+        -> Blocking: In the blocking state, a port does not forward frames but listens to BPDUs to determine the topology of the network. This state prevents loops by disabling ports that would create them. All ports start in the blocking state when the switch is initially powered on.
+        -> Listening: After the blocking state, a port transitions to the listening state. In this state, the port prepares to participate in the spanning tree algorithm by actively listening for BPDUs. While in the listening state, the port still does not forward frames.
+        -> Learning: After the listening state, a port enters the learning state. In this state, the port continues to listen to BPDUs and also starts to learn MAC addresses by examining the source address of frames received on the port. However, the port still does not forward frames.
+        -> Forwarding: Once the port has completed the listening and learning states, it transitions to the forwarding state. In this state, the port is fully operational and forwards frames according to the spanning tree topology. Frames are forwarded to their destination ports based on the MAC address table learned during the learning state.
+        -> Disabled: In some cases, a port may be administratively disabled by the network administrator. A disabled port does not participate in the spanning tree algorithm and does not forward frames.
+
+STP Port Roles
+    - Spanning Tree Protocol (STP) assigns different roles to ports on switches to establish a loop-free topology and efficiently forward traffic within an Ethernet network. The main port roles in STP are:
+        -> Root Port (RP): Each non-root switch in the network selects one of its ports as the root port. The root port is the port that provides the shortest path (lowest cost) to the root bridge. Traffic from the switch to the root bridge is forwarded through the root port.
+        -> Designated Port (DP): On each network segment, one switch port is selected as the designated port. The designated port is responsible for forwarding traffic from that segment toward the root bridge. The switch that has the lowest path cost to the root bridge on a particular segment becomes the designated switch for that segment, and its port on that segment becomes the designated port.
+        -> Alternate Port (AP): An alternate port is a backup path to reach the root bridge in case the root port fails. An alternate port is always in a discarding state, meaning it does not forward traffic. If the root port fails, the alternate port can quickly transition to the forwarding state to maintain connectivity.
+        -> Backup Port (BP): Similar to an alternate port, a backup port is also a backup path to reach the root bridge. However, backup ports are designated ports that are in a blocking state (rather than a discarding state like alternate ports). Backup ports become designated ports if the current designated port fails.
+        -> Disabled Port: A port that has been administratively disabled by the network administrator. Disabled ports do not participate in the spanning tree algorithm and do not forward traffic.
+
+
+LAB WORK:
+    - Create a new project.
+    - Add 3 Switches (L2 Switch - Cisco Switches).
+    - Connect them using cables on any port you want.
+    - Now, start the switches and open the console of the 1st L2 Switch.
+    - Now run the command "show spanning-tree", this will show us the details of the STP of the network.
+    - For switch 2, do the same thing. Now we can see the root bridge from the details printed after running that command.
+    - Do the same thing for switch 3 too.
+
+LAB WORK QUESTION:
+Connect 4 manages switches in a full mesh topology and find out:
+1. Which one is the root bridge?
+2. The root port of each of the non-root switches.
+3. The Blocking Port(s).
+
+    Instructions - 
+        - Do the same as before.
+        - Add 4 L2 Switches.
+        - Start them.
+        - Run the command "show spanning-tree" to get the details of the ports and all.
+        
+
+
+
+    
