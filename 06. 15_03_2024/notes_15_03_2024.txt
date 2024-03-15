@@ -1,0 +1,96 @@
+Notes of 15th of March, 2024
+
+
+What is FQDN?
+    - FQDN stands for Fully Qualified Domain Name. It represents the complete domain name for a specific host on the internet. An FQDN consists of two parts: the hostname and the domain name.
+        For example, consider the FQDN "www.example.com":
+            "www" is the hostname, representing a specific host or service.
+            "example.com" is the domain name, indicating the domain to which the host belongs.
+        Together, "www.example.com" forms the FQDN, providing the complete and specific address for accessing a particular host on the internet.
+
+    - FQDNs are used extensively in networking, server administration, and web browsing to uniquely identify resources on the internet and facilitate communication between devices and services. 
+    - They are particularly useful in environments where multiple hosts may share the same domain name but have different hostnames or subdomains.
+
+DNS (Domain Name System)
+    - The Domain Name System (DNS) is like the internet's phonebook. It's a decentralized system that translates human-readable domain names (like example.com) into numerical IP addresses that computers use to identify each other on the network. 
+    - When you type a website address into your browser, your computer contacts a DNS server to find out the IP address associated with that domain name, allowing you to connect to the desired website. DNS is crucial for the functioning of the internet as we know it, enabling users to access websites using easily memorable names rather than complicated numerical addresses.
+
+Why use DNS Server?
+    - Using a DNS server offers several benefits:
+        -> Human Readability: DNS servers allow us to use human-readable domain names (like google.com) instead of remembering complex IP addresses (like 172.217.4.206).
+        -> Centralized Management: DNS servers provide a centralized system for managing domain name mappings, making it easier to update and maintain records for large numbers of domain names.
+        -> Redundancy and Load Balancing: DNS servers can be set up in a redundant and load-balanced manner, ensuring that even if one server goes down, there are others available to handle requests. This improves reliability and availability.
+        -> Performance Optimization: DNS servers can be strategically placed around the world to reduce latency and improve the speed of DNS resolution for users accessing websites from different locations.
+        -> Security: DNS servers can implement security measures such as DNSSEC (Domain Name System Security Extensions) to help protect against DNS spoofing, cache poisoning, and other types of attacks.
+        -> Content Filtering and Blocking: DNS servers can be configured to filter or block access to certain websites or types of content, providing additional control over network traffic.
+
+    [=> To see the stored IP Addresses, we can write the command "cat /etc/hosts". This is a local file especially made by the OS and not shared to anyone. Apparently it shows the same IP Addresses, i.e., "192.168.1.10 foo.mydomain.org foo" and "192.168.1.13 bar.mydomain.org bar"]
+
+=> DNS is designed as a hierarchical, distributed database which can resolve names to IP addresses.
+=> DNS Server is based on the UDP Protocol and it's port number is 53.
+
+Parts of FQDN
+    - A Fully Qualified Domain Name (FQDN) consists of several parts:
+        -> Host Name: This is the name of the specific host or server within the domain. For example, in the FQDN "www.example.com," "www" is the hostname.
+        -> Subdomain (Optional): A subdomain is a hierarchical part of the domain name that precedes the domain name itself. It can represent a specific branch or subdivision within the domain. In the FQDN "www.example.com," there's no subdomain, but in "blog.example.com," "blog" would be the subdomain.
+        -> Domain Name: This is the primary name of the domain under which the host is registered. In "www.example.com," "example" is the domain name.
+        -> Top-Level Domain (TLD): This is the highest level of the domain hierarchy and often indicates the type or purpose of the domain. Common TLDs include ".com," ".org," ".net," ".edu," etc. In "www.example.com," ".com" is the TLD.
+
+
+Looking up IP Address for a given domain 
+    - Using the "nslookup" command. (does a forward lookup)
+        -> Type the "nslookup" command and then press enter. Then input the FQDN to get it's IP Address. 
+
+    - Using the "dig" command. (does a forward lookup)
+        -> Type the "dig" command in the given format "dig <Address or link of the site>"
+
+    - We can also get the name of the site from the IP Address by using the "reverse dig" command. (does a reverse lookup)
+        -> Type the "reverse dig" command in the given format "dig -x <IP Address>". But do note that it might show some wrong info as many famous sites might change their IP due to loadbalancers. So, it might not be correct all the time.
+
+Can we access a website by using its IP Address?
+    - The answer is not quite constant. It varies as the security infrastructure has increased these days. So, sometime, the webpage might appear, and sometime it might not because some sites have security features which can disable the access when accessed using their IP Addresses.
+
+Will the URL work if we append a dot character at the end?
+    - Yes, it will work because the protocol by default adds a dot character at the end. So, manually adding this does not give us any error.
+
+
+Root Servers 
+    - Root servers are a crucial part of the Domain Name System (DNS) infrastructure. They are a set of authoritative DNS servers that are responsible for the initial step in the DNS lookup process. There are 13 sets of root server clusters worldwide, labeled A through M, operated by various organizations.
+    - These root servers store the DNS root zone file, which contains the authoritative list of top-level domain (TLD) nameservers and their IP addresses. When a DNS resolver receives a query for a domain name (e.g., www.example.com) that it doesn't already have in its cache, it starts the resolution process by querying one of the root servers.
+    - However, the root servers don't have information about every domain on the internet. Instead, they provide referrals to TLD servers responsible for specific top-level domains like .com, .org, .net, and country-code TLDs like .uk, .fr, etc. Once the resolver receives the referral from the root servers, it then queries the appropriate TLD server, which, in turn, directs it to the authoritative nameserver for the domain in question.
+
+=> We can make DNS Queries using the command "dig +trace <URL>". This will give us an idea of how the website names are associated to their IP Addresses.
+=> The website name - IP Addresses are stored in 13 Servers in the world called as "Root Servers". 
+=> Tracing the DNS Query, we got to know that first, we check for the TLD of the FQDN in the Root Servers. After we find the TLD, we then look for the Domain Name in the servers. After we get the domain name, we check for the host name and shows us the result, i.e., IP Address of the URL. 
+
+=> So, all the data is scattered or distributed across various servers around the world 
+
+Common Terms associated with DNS 
+    - Name Servers - Name servers, also known as DNS servers, are essential components of the Domain Name System (DNS) infrastructure. They are specialized servers responsible for translating domain names into their corresponding IP addresses and vice versa. Name servers store DNS records that map domain names to IP addresses and provide this information to DNS resolvers upon request.
+    - Authoritative Name Servers: These servers hold the original and official DNS records for specific domains. They are responsible for providing answers to DNS queries regarding those domains. Authoritative name servers can be primary (master) or secondary (slave), depending on their role in the DNS zone.
+    - Caching Name Servers: Caching name servers, also known as recursive name servers or caching resolvers, are a type of DNS server that plays a crucial role in the DNS resolution process. Their primary function is to perform DNS resolution on behalf of client devices and cache the results to improve performance and reduce the load on authoritative name servers.
+    - Recursive Query: A recursive query is a type of DNS query in which a DNS resolver, typically a caching name server or a client device, requests DNS resolution for a domain name and expects a complete answer from the DNS server.
+    - DNS Resolvers: DNS resolvers, also known as DNS clients or DNS resolv.conf, are components of the Domain Name System (DNS) infrastructure responsible for resolving domain names to their corresponding IP addresses. They are typically implemented in software libraries or as part of the operating system's networking stack.
+    - Reverse DNS Lookup: Reverse DNS lookup, also known as reverse DNS resolution or reverse DNS mapping, is the process of retrieving a domain name (usually a hostname) associated with a given IP address. While traditional DNS resolution translates domain names into IP addresses, reverse DNS lookup performs the opposite operation by translating IP addresses into domain names.
+
+Common types of records stored in a DNS server
+    - DNS servers store various types of resource records (RRs), each serving a specific purpose in the Domain Name System (DNS). Some common types of DNS records include:
+        -> A (Address) Record: Associates a domain name with an IPv4 address. For example, "example.com" maps to "192.0.2.1".
+        -> AAAA (IPv6 Address) Record: Similar to an A record but maps a domain name to an IPv6 address.
+        -> CNAME (Canonical Name) Record: Maps an alias or subdomain to another domain's canonical name (the true or canonical name). For example, "www.example.com" can be a CNAME for "example.com".
+        -> MX (Mail Exchange) Record: Specifies the mail servers responsible for receiving email messages for a domain. It points to the domain name of the email server. For example, "mail.example.com".
+        -> TXT (Text) Record: Stores arbitrary text data associated with a domain. It can be used for various purposes, such as SPF (Sender Policy Framework) records for email authentication or domain verification.
+        -> NS (Name Server) Record: Specifies the authoritative name servers for a domain. It indicates which DNS servers are responsible for handling DNS queries for the domain.
+        -> PTR (Pointer) Record: Used for reverse DNS lookup, mapping an IP address to a domain name. It's the opposite of an A record.
+        -> SOA (Start of Authority) Record: Contains authoritative information about a DNS zone, including the primary name server, email address of the domain administrator, serial number, and other zone-related parameters.
+        -> SRV (Service) Record: Specifies the location (hostname and port number) of servers for specific services, such as SIP (Session Initiation Protocol) or LDAP (Lightweight Directory Access Protocol).
+        -> DNSKEY (DNS Key) Record: Contains cryptographic public keys used in DNSSEC (Domain Name System Security Extensions) for DNS security and authentication.
+
+=> To get the Name Servers of a domain, use the command "dig -t ns <URL>".
+=> To get the Mail Exchange of a domain, use the command "dig -t mx <URL>".
+=> To get the Start of Authority of a domain, use the command "dig -t soa <URL>".
+
+=> If we want to find the IP of an URL using different DNS Server, use the command "dig <URL> @<DNS Server>".
+
+
+
