@@ -1,0 +1,126 @@
+Notes of 5th of April, 2024.
+
+INSTALLING AND SETTING UP A DNS SERVER
+    - Setting up a DNS (Domain Name System) server can be a crucial step in managing your network infrastructure, enabling the translation of domain names into IP addresses. Here's a basic guide to installing and setting up a DNS server on a Linux system using BIND (Berkeley Internet Name Domain), one of the most commonly used DNS servers:
+        -> Install BIND: First, you need to install the BIND package on your Linux system. The installation process can vary depending on your Linux distribution. For example, on Ubuntu, you can use the following command:
+            sudo apt-get update
+            sudo apt-get install bind9 
+            [in GNS3 it is "sudo dnf install bind"]
+        
+            [-> After that, you can write the command "hostname" will show who is the host of the node]
+            [-> Then, we need the hostname to be a FQDN. So, to do this, we need to change a config file using the commands:
+                    "vim /etc/hostname"
+                Then enter the new hostname as "cse.jecassam.ac.in" and save the file. After that, we will need to restart the PC for the changes to apply. So, restart the device. 
+                If you cannot restart the server right away, use the command "hostname cse.jecassam.ac.in" which will set the new hostname for that session only.
+
+                Then, install some other packages using the command:
+                    "sudo dnf install bind bind-utils"
+                    
+                After that, look for the PCs IP Address using the command: 
+                    "ifconfig"
+                    
+                Then, add the IP and the present Hostname in the file using the command:
+                    "vim /etc/hosts"
+                    
+                Now, you can ping the Hostname in the terminal using the command: 
+                    "ping cse.jecassam.ac.in"
+                    
+                So, the hostname has now been assigned an IP Address]
+
+        -> Configuration Files: After installing BIND, you'll need to configure its main configuration file named named.conf, zone files, and other settings. Here's a basic overview:
+            = named.conf: This file contains global configuration options for BIND. The location of this file can vary depending on your Linux distribution. Common locations include /etc/named.conf or /etc/bind/named.conf.
+            = Zone Files: These files define the DNS zones hosted by your server, including forward and reverse lookup zones. Each zone file typically contains records mapping domain names to IP addresses (forward lookup) or IP addresses to domain names (reverse lookup).
+
+        -> Edit named.conf: Open the named.conf file in a text editor, using the command: "vim /etc/named.conf", and configure it according to your requirements. Here's a minimal example of what it might look like:
+            options {
+                directory "/var/named";
+                recursion no; [set the recursion to no because otherwise, it can be used to set a DDoS attack]
+            };
+
+            zone "." {
+                type hint;
+                file "named.ca";
+            };
+
+            include "/etc/named.rfc1912.zones";
+
+            [You can look up the "/etc/named/named.ca" file and see that it has the IP Addresses of those central DNS Servers]
+
+
+        -> Create Zone Files: Create zone files for each domain you want to host. These files typically reside in the same directory specified in the named.conf file, using the command "vim /etc/named.rfc1912.zones". Here's a basic example of a zone file for a domain named example.com:
+                    zone "jecassam.ac.in" IN {
+                        type primary;
+                        file "jecassam.forward.zone";
+                        allow-update { none; }'
+                    };
+
+                    //jecassam.ac.in in reverse zone
+                    zone "<Remove the last bit from the IP Address and then write the IP Address in reverse>" IN {
+                        type "primary";
+                        file "jecassam.reverse.zone";
+                        allow-update { none; };
+                    };
+
+                Then, write the command "named-checkconf". This will give us an error if we made an error while changing the zone file. No output means no error.
+
+                Now, write the commands : 
+                    "cd/var/named"
+                    "cp named.localhost jecassam.forward.zone" 
+                    "vim jecassa.forward.zone" and then change the contents to this
+
+                NOTE: EITHER USE ONLY TABS OR SPACES. DO NOT MIX THEM
+                    $TTL 8h
+                    @   IN  SOA ns1.jecassam.ac.in. root.jecassam.ac.in. (
+                                2024040501  ; Serial
+                                1D        ; Refresh
+                                1H        ; Retry
+                                1W        ; Expire
+                                3H        ; Minimum TTL
+                            )
+                        IN  NS  ns1.jecassa.ac.in.
+                        IN  MX 10 mx1.jecassam.ac.in.  //This is the Mail Server
+
+                    cse IN  A  10.0.2.15  //we can also write cse.jecassam.ac.in. But still writing CSE will automatically do it.
+                    ns1 IN  A  10.0.2.53 //A means that it is an Address.
+                    max1 IN  A  10.0.2.15
+                    www IN  CNAME  cse.jecassam.ac.in.  //this sets a www domain on this
+
+                Now the commands:
+                    "cp jecassam.forward.zone jecassam.reverse.zone"
+                    "vim jecassam.reverse.zone" and then change the contents to this 
+                
+                NOTE: EITHER USE ONLY TABS OR SPACES. DO NOT MIX THEM
+                    $TTL 8h
+                    @   IN  SOA ns1.jecassam.ac.in. root.jecassam.ac.in. (
+                                2024040501  ; Serial
+                                1D        ; Refresh
+                                1H        ; Retry
+                                1W        ; Expire
+                                3H        ; Minimum TTL
+                            )
+                        IN  NS  ns1.jecassa.ac.in.
+
+                    15 IN  PTR  cse  //PTR means that is a Pointer
+                    53 IN  PTR  ns1  
+                    15 IN  PTR  mx1
+                
+                [I guess, the reverse zone links the IP address back to the Domain Names. Not sure though.]
+
+                Now, check if we have written correctly or not using the command:
+                    "named-checkzone jecassam.ac.in jecassam.forward.zone"
+
+                Do the same for the reverse zone file
+
+        -> Start BIND Service: After configuring BIND and creating zone files, start the BIND service using the following command:
+                sudo systemctl start named
+            You can also enable BIND to start automatically on system boot using:
+                sudo systemctl enable named
+
+        -> After that, run this command: 
+            "chown root:named jecassam.*"
+
+        -> Testing: Test your DNS server configuration by querying it for domain records using tools like dig or nslookup. For example:
+                dig cse.jecassam.ac.in in @127.0.0.1
+            This should return the IP address associated with the domain example.com.
+
+        -> Firewall Configuration: Ensure that your firewall allows DNS traffic (UDP port 53) to reach your DNS server.
