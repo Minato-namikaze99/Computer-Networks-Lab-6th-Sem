@@ -1,0 +1,144 @@
+NOTES OF 26TH OF APRIL, 2024 
+
+SOCKET PROGRAMMING
+
+Books for Socket Programming - Beginning Linux Programming by Richard Stones and Neil Matthew 
+
+- Socket Porgramming is done in C because it allows us to clear out our concepts and make a clear idea of what is actually happening.
+
+What is Socket Porgramming?
+    - Socket programming is a way of enabling communication between processes on different computers or within the same computer. It's a fundamental concept in networking and is widely used in various applications like web servers, email clients, chat applications, and more.
+
+        Here's a brief overview of how it works:
+            = Socket: A socket is an endpoint for communication between two machines. It's like a door through which information can be sent and received.
+            
+            = Client-Server Model: In socket programming, communication typically happens between a client and a server. The server waits for incoming connections from clients, and the client initiates communication by connecting to the server.
+            
+            = Types of Sockets: There are two main types of sockets: 
+                + TCP (Transmission Control Protocol) sockets and UDP (User Datagram Protocol) sockets. TCP provides reliable, connection-oriented communication, while UDP provides connectionless, unreliable communication.
+            
+            = Steps in Socket Programming:
+                a. Creating a Socket: Both the client and server need to create sockets to establish communication.
+                b. Binding: The server binds to a specific address and port, while the client typically doesn't bind to any specific address or port.
+                c. Listening (Server): The server socket listens for incoming connections.
+                d. Connecting (Client): The client socket connects to the server socket.
+                e. Accepting (Server): Once a client connects, the server accepts the connection and creates a new socket for communication with that client.
+                f. Sending and Receiving Data: Both the client and server can send and receive data through their respective sockets.
+                g. Closing the Connection: After communication is complete, both the client and server close their sockets.
+
+            = Socket APIs: Most programming languages provide socket APIs that allow developers to work with sockets easily. For example, in Python, you can use the socket module to create and manage sockets.
+
+NOTE - TCP is called a Stream Socket and UDP is called the Data Socket (or DGRAM).
+
+Sockets vs IPC (Inter-Process Communication)
+[IPC is a type of Sockets, kinda]
+    - Sockets and Inter-Process Communication (IPC) are both mechanisms used for communication between processes, but they serve different purposes and operate at different levels of abstraction.
+        = Socket:
+            > Purpose: Sockets are primarily used for communication between processes over a network. They enable communication between processes running on different machines or on the same machine but through a network protocol stack.
+            > Abstraction Level: Sockets operate at a higher level of abstraction compared to IPC. They abstract away the complexities of network communication, providing a convenient interface for sending and receiving data over a network.
+            > Typical Use Cases: Sockets are commonly used in client-server architectures for building networked applications such as web servers, chat applications, and distributed systems.
+
+        = Inter-Process Communication (IPC):
+            > Purpose: IPC is used for communication between processes running on the same machine. It allows processes to exchange data and synchronize their actions.
+            > Abstraction Level: IPC operates at a lower level of abstraction compared to sockets. It provides mechanisms for processes to directly share memory, pass messages, or synchronize using semaphores or other synchronization primitives.
+            > Typical Use Cases: IPC is commonly used in multi-threaded applications, microservices architectures, and operating systems for communication between different components of a system.
+
+Necessary things required for a port connection
+    - To establish a socket connection, you typically need the following:
+        = IP Address and Port Number: For a client to connect to a server, it needs to know the IP address and port number of the server it wants to communicate with. The server also needs to bind to a specific IP address and port to listen for incoming connections.
+        = Socket Creation: Both the client and server need to create sockets. In most programming languages, you can use socket APIs to create sockets. For example, in Python, you can use the socket module.
+        = Binding (for Server): If you're building a server, it needs to bind to a specific IP address and port number so that clients can connect to it. This step associates the socket with a specific network interface and port.
+        = Listening (for Server): After binding, the server socket needs to listen for incoming connections. It enters a listening state, waiting for clients to connect.
+        = Connection (for Client): The client socket needs to initiate a connection to the server by specifying the server's IP address and port number.
+        = Accepting (for Server): When a client tries to connect, the server socket accepts the connection, creating a new socket specifically for communication with that client.
+        = Sending and Receiving Data: Once the connection is established, both the client and server can send and receive data through their respective sockets. This involves using methods provided by the socket API to send data from one end and receive it at the other end.
+        = Closing the Connection: After communication is complete, both the client and server should close their sockets to release resources and properly terminate the connection.
+
+Port Numbers 
+    - In networking, ports are virtual endpoints used to identify specific processes or services running on a host device. They facilitate communication by allowing multiple services or processes to operate concurrently on the same device. Ports are categorized into different types based on their functionality and usage:
+        = Well-Known Ports (0-1023):
+            These ports are also known as system ports or privileged ports.
+            Reserved for specific, well-known services. For example, HTTP typically uses port 80, HTTPS uses port 443, FTP uses port 21, SSH uses port 22, etc.
+            Access to well-known ports is restricted on most systems, typically requiring administrative privileges to bind services to these ports.
+
+        = Registered Ports (1024-49151):
+            Registered ports are used by applications or services that have been registered with the Internet Assigned Numbers Authority (IANA).
+            They are typically used by applications and services that are not widely deployed but still need a reserved port number for their operation.
+            Examples include various database systems, web servers with non-standard configurations, and proprietary services.
+
+        = Dynamic or Private Ports (49152-65535):
+            Also known as ephemeral ports or private ports.
+            These ports are available for dynamic allocation by client applications and are not reserved for any specific service.
+            When a client initiates communication with a server, it typically uses a dynamic port as its source port. The server responds to the client's dynamic port.
+            After the communication is completed, the dynamic port is released and can be reused by other applications.
+    - Well-Known Ports vs. Ephemeral Ports:
+        Well-known ports are used by servers to offer specific services, while ephemeral ports are used by clients to initiate communication.
+        Well-known ports are static and predefined, whereas ephemeral ports are dynamically allocated by the operating system to client applications.
+        Well-known ports have fixed numbers (0-1023), while ephemeral ports have a much larger range (49152-65535).
+
+Unix Domain Sockets 
+    - Unix domain sockets, also known as IPC (Inter-Process Communication) sockets or local sockets, are a type of inter-process communication mechanism used for communication between processes on the same Unix-like operating system. 
+        Unlike traditional network sockets that communicate over a network, Unix domain sockets communicate entirely within the operating system's kernel.
+
+        Here are some key points about Unix domain sockets:
+            = Communication Within a Single Host: Unix domain sockets facilitate communication between processes running on the same host. They are ideal for scenarios where processes need to exchange data locally without the overhead of network communication.
+            = File System-Based: Unix domain sockets are implemented using special file types within the file system. They are represented as special files that processes can use to establish communication channels.
+            = High Performance: Unix domain sockets offer high-performance communication because data is transferred directly between processes in the kernel space, without the overhead associated with network communication. This makes them suitable for scenarios where low latency and high throughput are important.
+            = Synchronous and Reliable: Communication over Unix domain sockets is synchronous and reliable. Data sent by one process is guaranteed to be received in the same order by the receiving process, and the sender is blocked until the receiver acknowledges receipt.
+            = Socket Addressing: Like network sockets, Unix domain sockets are identified by an address. The address is typically a file path within the file system, though abstract socket addresses are also supported on some systems.
+            = Socket API: Unix domain sockets are accessed using the same socket API as network sockets. This means that processes can use familiar socket functions like socket(), bind(), listen(), connect(), send(), and recv() to establish and manage Unix domain socket connections.
+            = Security and Permissions: Since Unix domain sockets operate entirely within the host system, they inherit the permissions and security model of the underlying file system. Access to Unix domain sockets can be controlled using file system permissions, making them suitable for securing local communication channels.
+
+Netstat in Socket Programming 
+    - In socket programming, netstat is a command-line tool used for displaying network-related information such as active network connections, routing tables, interface statistics, masquerade connections, and multicast memberships. 
+      It is available on most Unix-like operating systems, including Linux, macOS, and BSD variants. Netstat can be particularly useful when developing or debugging socket-based applications as it provides insight into the current state of network connections on the system. 
+      Here are some common uses of netstat in the context of socket programming:
+        = Displaying Active Network Connections:
+            netstat -a
+            This command displays all active network connections, both listening and established, along with the associated protocol, local and foreign addresses, and state.
+
+        = Displaying Listening Sockets:
+            netstat -l
+            This command lists all sockets that are listening for incoming connections. It shows the protocol, local address, and port number for each listening socket.
+
+        = Displaying PID and Program Name:
+            netstat -p
+            This command displays the PID (Process ID) and program name associated with each network connection or listening socket. This information can be helpful in identifying which processes are responsible for specific network activity.
+
+        = Displaying Network Statistics:
+            netstat -s
+            This command provides various network statistics such as TCP, UDP, ICMP, and IP traffic counts, errors, and packet statistics.
+
+        = Filtering Output:You can combine netstat with other commands or tools to filter and process its output further. For example, you can use grep to search for specific patterns in the output or awk to extract specific fields.
+            netstat -a | grep "ESTABLISHED"
+            This command displays only the established TCP connections.
+
+
+TCP Sockets
+    - Server Side 
+        = socket(): create a socket (an OS resource file or file descriptor)
+        = bind(): name the socket (local sockets have a filename. Network sockets have a port number)
+        = listen(): create a queue for incoming requests (client connects)
+        = accept(): a new socket is created (for the specific connecting client)
+        = read()/write(): communicate using socket 
+
+    - Client Side 
+        = socket(): create a socket (an OS resource file or file descriptor)
+        = connect(): establish a connection with the server
+        = read()/write(): communicate using socket 
+
+UDP Sockets 
+    - Server Side 
+        = socket(): create a socket (an OS resource file or file descriptor)
+        = bind(): name the socket (local sockets have a filename. Network sockets have a port number)
+        = recvirom()/sendto(): communicate with the socket
+
+    - Client Side 
+        = socket(): create a socket (an OS resource file or file descriptor)
+        = recvirom()/sendto(): communicate with the socket
+
+
+
+
+
+
